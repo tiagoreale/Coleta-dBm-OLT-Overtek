@@ -1,0 +1,90 @@
+{
+    "zabbix_export": {
+        "version": "5.4",
+        "date": "2023-02-10T20:59:24Z",
+        "groups": [
+            {
+                "uuid": "d9d86189b85f4e7b8298a8bd45ed0f5d",
+                "name": "OVERTEK"
+            }
+        ],
+        "templates": [
+            {
+                "uuid": "44467aa1a1cb4b85b763ead2f3953c9a",
+                "template": "OVERTEK DmOS - ONU Interfaces",
+                "name": "OVERTEK DmOS - ONU Interfaces",
+                "groups": [
+                    {
+                        "name": "OVERTEK"
+                    }
+                ],
+                "discovery_rules": [
+                    {
+                        "uuid": "f9e3d9d4f2f54387a61cadc582fe5b0b",
+                        "name": "Network interfaces",
+                        "type": "SNMP_AGENT",
+                        "snmp_oid": "discovery[{#SNMPVALUE},.1.3.6.1.4.1.3320.10.3.1.1.4]",
+                        "key": "onuifDescr.discovery",
+                        "delay": "1d",
+                        "lifetime": "1d",
+                        "item_prototypes": [
+                            {
+                                "uuid": "35e8b35a099049819a2fe348a44e96a5",
+                                "name": "Power RX on $1",
+                                "type": "SNMP_AGENT",
+                                "snmp_oid": "1.3.6.1.4.1.3320.10.3.4.1.2.{#SNMPINDEX}",
+                                "key": "onuIfOnuPowerRx[{#SNMPVALUE}]",
+                                "delay": "1d",
+                                "history": "1d",
+                                "trends": "0",
+                                "value_type": "FLOAT",
+                                "units": "dBm",
+                                "preprocessing": [
+                                    {
+                                        "type": "MULTIPLIER",
+                                        "parameters": [
+                                            "1"
+                                        ]
+                                    }
+                                ],
+                                "tags": [
+                                    {
+                                        "tag": "Application",
+                                        "value": "ONU-Power"
+                                    }
+                                ],
+                                "trigger_prototypes": [
+                                    {
+                                        "uuid": "b99fd1fca6f044ecb63d8c0148114fb9",
+                                        "expression": "last(/OVERTEK DmOS - ONU Interfaces/onuIfOnuPowerRx[{#SNMPVALUE}])<=-24",
+                                        "name": "Power RX overload on {HOST.NAME} interface {#SNMPVALUE}",
+                                        "priority": "HIGH",
+                                        "manual_close": "YES"
+                                    }
+                                ]
+                            }
+                        ],
+                        "graph_prototypes": [
+                            {
+                                "uuid": "9f0e1b046f7a41a59fafecb668d56b4e",
+                                "name": "Power on ONU {#SNMPVALUE}",
+                                "graph_items": [
+                                    {
+                                        "sortorder": "1",
+                                        "drawtype": "BOLD_LINE",
+                                        "color": "FF0000",
+                                        "yaxisside": "RIGHT",
+                                        "item": {
+                                            "host": "OVERTEK DmOS - ONU Interfaces",
+                                            "key": "onuIfOnuPowerRx[{#SNMPVALUE}]"
+                                        }
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+}
